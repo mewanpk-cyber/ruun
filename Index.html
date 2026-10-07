@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="ckb" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ڕوون — AI Face Studio</title>
+<style>
+:root{--bg:#07070a;--card:#111116;--line:#292931;--text:#f7f7fa;--muted:#9d9da8;--accent:#b9ff62;--accent2:#7ce33b}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% -20%,#303a21 0,#0a0b0b 42%,#07070a 75%);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Tahoma,Arial,sans-serif}
+.app{min-height:100vh}.nav{height:70px;border-bottom:1px solid #22242a;background:#090a0ce8;backdrop-filter:blur(20px);display:flex;align-items:center;justify-content:space-between;padding:0 25px;position:sticky;top:0;z-index:5}.brand{display:flex;align-items:center;gap:10px;font-size:21px;font-weight:900}.mark{width:38px;height:38px;border-radius:13px;background:linear-gradient(135deg,#d7ff89,#61c930);display:grid;place-items:center;color:#0b1007}
+.badge{border:1px solid #30332b;border-radius:99px;padding:8px 13px;color:#cbd0c5;font-size:13px}.wrap{max-width:1120px;margin:auto;padding:30px 18px 70px}.hero{text-align:center}.eyebrow{display:inline-block;color:var(--accent);background:#182112;border:1px solid #334526;border-radius:99px;padding:7px 12px;font-size:12px}.hero h1{font-size:42px;margin:16px 0 8px;letter-spacing:-1px}.hero h1 span{color:var(--accent)}.hero p{max-width:650px;margin:auto;color:var(--muted);line-height:1.9}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:26px}.upload{border:1.5px dashed #3a3d43;border-radius:24px;background:#101116;min-height:330px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:25px;transition:.2s}.upload.active{border-color:var(--accent);background:#121a0f}.icon{font-size:45px;margin-bottom:9px}.upload h2{margin:6px 0}.upload p{color:var(--muted);font-size:14px}.btn{border:0;background:var(--accent);color:#0b1007;font-weight:900;border-radius:12px;padding:12px 18px;margin-top:10px}.ghost{border:1px solid #353740;background:#17181e;color:#eee;border-radius:12px;padding:11px 16px}.hidden{display:none}.preview{width:min(100%,260px);height:245px;object-fit:cover;border-radius:18px;display:none;border:1px solid #34363d}.name{color:#aeb5aa;font-size:13px;margin-top:9px;max-width:90%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.panel{margin-top:16px;background:#101116;border:1px solid #24262d;border-radius:22px;padding:20px;display:none}.panel h3{margin:0 0 14px}.controls{display:flex;gap:8px;flex-wrap:wrap}.control{padding:11px 13px;border:1px solid #30323a;border-radius:12px;background:#17181e;color:#e9e9ed}.control.on{border-color:var(--accent);background:#192413;color:#d9ffb0}.generate{width:100%;font-size:16px;padding:15px;margin-top:16px}.result{margin-top:18px;display:none}.resultBox{background:#0d0e12;border:1px solid #292b33;border-radius:20px;padding:15px}.result img{width:100%;max-height:560px;object-fit:contain;border-radius:15px;background:#050506}.beforeAfter{display:grid;grid-template-columns:1fr 1fr;gap:10px}.beforeAfter img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:14px}.note{color:var(--muted);font-size:12px;line-height:1.8;margin-top:10px}.status{display:none;margin-top:13px;color:#c8d1c1;text-align:center}.spinner{width:18px;height:18px;border:2px solid #475044;border-top-color:var(--accent);border-radius:50%;display:inline-block;animation:spin .8s linear infinite;vertical-align:middle;margin-left:7px}@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:760px){.grid{grid-template-columns:1fr}.hero h1{font-size:31px}.nav{padding:0 14px}.badge{display:none}}
+</style>
+</head>
+<body>
+<header class="nav"><div class="brand"><div class="mark">✦</div> ڕوون AI</div><div class="badge">Face Studio · Natural</div></header>
+<main class="wrap">
+<section class="hero">
+ <div class="eyebrow">✨ گۆڕینی ڕوو بە شێوەی سروشتی</div>
+ <h1>وێنەکەت هەڵبژێرە، <span>ئەنجامەکە خۆت بەدەست بهێنە.</span></h1>
+ <p>وێنەی نموونە و وێنەی خۆت دابنێ. ئەم پڕۆتۆتایپە پێش/دوای نیشان دەدات و بۆ وەشانی تەواو ئامادەیە بۆ پەیوەستکردن بە موتورێکی AI ـی ڕاستەقینە.</p>
+</section>
+
+<div class="grid">
+ <div class="upload" id="targetBox">
+   <div class="icon">🖼️</div><h2>وێنەی نموونە</h2><p>ئەو وێنەیەی دەتەوێت ستایلی بگریت</p>
+   <input id="target" class="hidden" type="file" accept="image/*">
+   <button class="btn" onclick="target.click()">هەڵبژاردنی وێنە</button>
+   <img id="targetPrev" class="preview"><div id="targetName" class="name"></div>
+ </div>
+ <div class="upload" id="sourceBox">
+   <div class="icon">🤳</div><h2>وێنەی ڕووی تۆ</h2><p>وێنەیەکی ڕوون کە ڕووت باش دیار بێت</p>
+   <input id="source" class="hidden" type="file" accept="image/*">
+   <button class="btn" onclick="source.click()">هەڵبژاردنی وێنە</button>
+   <img id="sourcePrev" class="preview"><div id="sourceName" class="name"></div>
+ </div>
+</div>
+
+<section class="panel" id="panel">
+ <h3>🎨 شێوازی ئەنجام</h3>
+ <div class="controls">
+  <button class="control on" data-mode="natural">✨ سروشتی</button>
+  <button class="control" data-mode="match">💡 هەماهەنگی ڕووناکی</button>
+  <button class="control" data-mode="portrait">📸 پرۆفایل</button>
+ </div>
+ <button class="btn generate" id="generate">⚡ دروستکردنی پیشاندانی پێش/دوای</button>
+ <div class="status" id="status"><span class="spinner"></span> AI لەسەر وێنەکان کار دەکات...</div>
+ <div class="result" id="result">
+  <h3>نتیجە</h3>
+  <div class="resultBox">
+   <div class="beforeAfter"><div><small>نموونە</small><img id="outTarget"></div><div><small>وێنەی تۆ</small><img id="outSource"></div></div>
+   <p class="note">ئەمە پڕۆتۆتایپی UI ـە. بۆ گۆڕینی ڕووی ڕاستەقینە، پێویستە backend/API ـی Face Swap زیاد بکرێت. لە وەشانی بەرهەمی، ئەنجامەکە دەبێت تەنها بە ڕەزامەندی خاوەنی وێنەکان بەکاربهێنرێت.</p>
+  </div>
+ </div>
+</section>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+let targetUrl='',sourceUrl='',mode='natural';
+function bind(input,prev,name,box){input.addEventListener('change',()=>{const f=input.files[0];if(!f)return;const u=URL.createObjectURL(f);prev.src=u;prev.style.display='block';name.textContent='📷 '+f.name;box.classList.add('active');check()})}
+bind($('target'),$('targetPrev'),$('targetName'),$('targetBox'));
+bind($('source'),$('sourcePrev'),$('sourceName'),$('sourceBox'));
+function check(){if($('target').files[0]&&$('source').files[0])$('panel').style.display='block'}
+document.querySelectorAll('.control').forEach(b=>b.onclick=()=>{document.querySelectorAll('.control').forEach(x=>x.classList.remove('on'));b.classList.add('on');mode=b.dataset.mode});
+$('generate').onclick=()=>{
+ const a=$('target').files[0],b=$('source').files[0];if(!a||!b)return;
+ $('status').style.display='block';$('result').style.display='none';
+ setTimeout(()=>{$('status').style.display='none';$('result').style.display='block';$('outTarget').src=URL.createObjectURL(a);$('outSource').src=URL.createObjectURL(b)},900)
+}
+</script>
+</body>
+</html>
